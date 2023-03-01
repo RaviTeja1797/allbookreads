@@ -16,8 +16,8 @@ const initializeDBAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     });
-    app.listen(3006, () => {
-      console.log("Server Running at http://localhost:3006/");
+    app.listen(3007, () => {
+      console.log("Server Running at http://localhost:3007/");
     });
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
@@ -153,4 +153,20 @@ app.delete("/books/:bookId/", async(request, response)=>{
     
     await db.run(deleteBookQuery);
     response.send('Book Deleted Succssfully!!')
+})
+
+//get Author books API
+
+app.get('/authors/:authorId/books', async(request, response)=>{
+    const {authorId} = request.params;
+    const getAuthorBooksQuery = `
+    SELECT
+    *
+    FROM
+        book
+    WHERE
+        author_id = ${authorId};`;
+
+    const booksList = await db.all(getAuthorBooksQuery);
+    response.send(booksList)
 })
